@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tocking 제품 기획"
+  short_description: "토론 앱 기능과 요구사항을 작은 단위로 정의합니다."
+  default_prompt: "Tocking 기능을 제품 요구사항으로 정리해줘."

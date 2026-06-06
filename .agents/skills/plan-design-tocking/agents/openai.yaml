@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tocking 기획·디자인"
+  short_description: "기획과 디자인 요청을 작은 Skill로 나눕니다."
+  default_prompt: "Tocking 기획·디자인 작업을 세분화해줘."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tocking UI QA"
+  short_description: "화면 레이아웃과 토론 UX를 검증합니다."
+  default_prompt: "Tocking UI를 QA해줘."

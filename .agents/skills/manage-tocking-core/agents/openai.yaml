@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tocking Core 관리"
+  short_description: "공통 테마와 디자인 토큰을 관리합니다."
+  default_prompt: "Tocking core 공통 요소를 정리해줘."
