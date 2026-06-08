@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tocking/core/router/app_routes.dart';
 import 'package:tocking/core/tocking_tokens.dart';
 import 'package:tocking/features/home/presentation/home_screen.dart';
 import 'package:tocking/main.dart';
@@ -15,6 +16,13 @@ void main() {
     );
     expect(find.text('검색어를 입력해주세요.'), findsOneWidget);
     expect(find.byIcon(Icons.search), findsOneWidget);
+  });
+
+  testWidgets('uses home as the initial route', (WidgetTester tester) async {
+    await tester.pumpWidget(const TockingApp());
+
+    expect(AppRoutes.home, '/');
+    expect(find.byType(HomeScreen), findsOneWidget);
   });
 
   testWidgets('matches requested app bar asset sizes', (

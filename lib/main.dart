@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'core/router/app_router.dart';
 import 'core/tocking_theme.dart';
-import 'features/home/presentation/home_screen.dart';
 
 void main() {
   runApp(const TockingApp());
@@ -12,11 +12,11 @@ class TockingApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Tocking',
       debugShowCheckedModeBanner: false,
       theme: TockingTheme.light(),
-      home: const HomeScreen(),
+      routerConfig: AppRouter.router,
     );
   }
 }

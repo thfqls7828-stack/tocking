@@ -26,3 +26,5 @@ Naver 추천 주제와 OpenAI API 연동 경계를 구현한다. UI 구현과 �
 - OpenAI 생성 결과는 구조 검증 후 도메인으로 넘긴다.
 - Naver 원본 데이터와 토론용 가공 데이터를 구분한다.
 - UI 컴포넌트 구현은 `build-tocking-ui`가 담당한다.
+- Riverpod provider는 API client를 직접 UI에 노출하지 않고, repository 또는
+  use case 경계를 통해 ViewModel에 주입한다.
