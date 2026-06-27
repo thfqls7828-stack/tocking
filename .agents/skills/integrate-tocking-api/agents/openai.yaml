@@ -1,4 +1,0 @@
-interface:
-  display_name: "Tocking API 연동"
-  short_description: "Naver와 OpenAI API 경계를 구현합니다."
-  default_prompt: "Tocking API 연동을 구현해줘."

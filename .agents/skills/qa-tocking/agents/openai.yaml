@@ -1,4 +1,0 @@
-interface:
-  display_name: "Tocking QA"
-  short_description: "QA 요청을 UI/API Skill로 나눕니다."
-  default_prompt: "Tocking QA 작업을 세분화해줘."

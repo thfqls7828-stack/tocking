@@ -1,116 +1,86 @@
-# Tocking 에이전트 가이드
+# Codex Project Instructions
 
-## 프로젝트 목적
+## Role
 
-Tocking은 토론 앱입니다.
+Codex는 이 저장소에서 Flutter app 개발을 돕는 협업자다. 사용자의 요청을 실행하기 전에 intent, scope, risk를 분류하고, 필요한 최소 skill, 문서, 검증만 사용한다.
 
-이 앱은 Naver에서 추천하는 주제를 바탕으로 사용자가 토론할 수 있는
-공간을 제공합니다. OpenAI API를 사용해 추천 주제를 토론하기 좋은 형태로
-정리하고, 사용자가 주장과 반론을 탐색하며 다양한 관점을 비교하고 구조화된
-대화에 참여할 수 있도록 돕습니다.
+이 파일은 Codex가 항상 먼저 읽는 최상위 지침이다. 상세 기준은 `docs/harness/*`에 둔다. 충돌이 있으면 이 파일과 실제 설정/skill/script 구현을 우선하고, 갱신 필요성을 보고한 뒤 사용자 요청 또는 승인 후 `docs/harness/*`를 갱신한다.
 
-## 제품 방향
+## Operating Policy
 
-- 앱 제목: `Tocking`
-- 핵심 영역: 토론과 의견 교환
-- 주제 출처: Naver 추천 주제
-- AI 기능: OpenAI API를 활용한 주제 구성, 토론 보조, 요약, 관점 탐색
-- 핵심 사용자 가치: 사용자가 토론 구조를 처음부터 직접 만들지 않아도,
-  현재 추천되는 주제에 대해 명확하고 흥미롭게 토론할 수 있는 공간을 제공
+- 모든 요청은 작업 전에 intent, scope, risk를 분류한다.
+- 작은 변경은 필요한 skill과 verification만 사용한다.
+- 기존 코드, 문서, 사용자 변경사항을 먼저 확인하고 불필요한 리팩터링을 하지 않는다.
+- 앱별 제품, 디자인, 아키텍처, 운영 사실을 추측으로 확정하지 않는다.
+- 문서가 없거나 상황이 불명확하면 추측으로 채우지 않고, 갱신 필요성을 보고한 뒤 사용자 요청 또는 승인 후 작성/수정한다.
+- 사용자 요청이 부정확하거나 필요한 결정이 없으면 확정하지 않고 선택지를 제공한다.
+- 구현을 막는 blocking question이 있으면 사용자에게 먼저 질문하고, 답변 없이 확정 문서나 코드를 작성하지 않는다.
+- 문서와 코드가 충돌하면 코드를 확인한 뒤 충돌과 갱신 필요성을 보고한다.
+- 상세 routing 기준은 `docs/harness/prompt-routing.md`를 따른다.
 
-## 작업 원칙
+## Skill Selection
 
-- 구현 선택은 토론 중심의 제품 경험에 맞춥니다.
-- 토론을 더 명확하고 균형 있게 만들며, 사용자가 쉽게 참여할 수 있도록 돕는
-  기능을 우선합니다.
-- 앱 개발은 클린 아키텍처를 준수합니다. 도메인, 데이터, 프레젠테이션,
-  외부 연동 책임을 분리하고, UI나 API 구현 세부사항이 도메인 규칙에 새지
-  않도록 관리합니다.
-- 앱 상태 관리는 Riverpod 라이브러리를 사용합니다. 화면 상태, 비동기 API 상태,
-  의존성 주입은 Riverpod provider 계층으로 관리하고, 임시 지역 UI 상태를
-  제외한 주요 상태는 위젯 내부에 흩어놓지 않습니다.
-- 프레젠테이션 계층은 MVVM 패턴을 따릅니다. View는 화면 렌더링과 사용자 입력
-  전달에 집중하고, ViewModel은 Riverpod을 통해 상태와 액션을 노출하며, Model은
-  도메인 엔티티와 데이터 모델을 명확히 구분합니다.
-- 각 기능과 위젯은 최소 기능 단위를 기준으로 작게 유지합니다. 가능하면 하나의
-  기능 파일이나 위젯 파일이 300줄을 넘지 않도록 분리하되, 가독성이나 응집도를
-  해치면서까지 무리하게 줄이지는 않습니다.
-- `core` 영역은 공통 기반으로 따로 관리합니다. 앱 테마, 색상, 타이포그래피,
-  앱 내 shadow, width, height, spacing, radius 같은 디자인 토큰과 공통
-  유틸리티는 기능 화면에 흩어놓지 않고 `core`에서 재사용할 수 있게 둡니다.
-- Naver 주제 수집과 OpenAI API 동작은 중요한 제품 경계로 취급합니다. 해당
-  영역을 구현할 때는 가정과 제약을 문서화합니다.
-- 새로운 하네스, 워크플로, 연동을 추가할 때는 관련 참고 자료와 결정 사항을
-  이 문서 또는 연결된 문서에 덧붙입니다.
-- 이 세션에서 하네스를 구현하거나 수정할 때는 코드 변경과 함께
-  `AGENTS.md`도 같이 갱신합니다. 새로 확인한 공식 문서, 구현 결정, 제약,
-  검증 방법, 후속 개선 후보를 이 문서에 남깁니다.
-- 개발, 기획, 디자인, QA 작업은 가능한 한 최소 기능 단위의 Skill로 나눠
-  수행합니다. 예를 들어 UI 구현과 API 연동은 같은 개발 작업이라도 서로 다른
-  Skill에서 다루며, 각 Skill은 한 가지 책임만 보장합니다.
-- state는 `docs/state.md`를 기준으로 관리합니다. 큰 기획과 작은 기획을
-  분리하고, handoff가 필요한 작업은 대상 Skill, 완료된 것, 남은 것, 검증
-  상태, 주의할 제약을 명확히 남깁니다.
+별도의 중앙 router skill을 강제하지 않는다. Codex는 각 skill의 `name`과 `description`을 기준으로 필요한 최소 skill을 선택한다.
 
-## Tocking 전용 Skills
+- product: `.agents/skills/plan-product/SKILL.md`
+- design: `.agents/skills/design-ui/SKILL.md`
+- architecture: `.agents/skills/plan-architecture/SKILL.md`
+- implementation: `.agents/skills/implement-feature/SKILL.md`
+- test: `.agents/skills/verify-change/SKILL.md`
+- deploy: `.agents/skills/prepare-release/SKILL.md`
+- operations: `.agents/skills/operate-app/SKILL.md`
+- harness: `AGENTS.md`, `.codex/`, `.agents/skills/`, `docs/harness/`
 
-- `plan-design-tocking`: 넓은 기획/디자인 요청을 세분 Skill로 나눌 때
-  사용합니다.
-- `plan-tocking-product`: 제품 요구사항, 사용자 시나리오, MVP 범위를 작게
-  정의할 때 사용합니다.
-- `manage-tocking-state`: state, handoff, 큰 기획/작은 기획 구조를 정리할 때
-  사용합니다.
-- `design-tocking-ui`: 화면 구조, 상태별 UI, 토론 UX를 설계할 때 사용합니다.
-- `build-tocking-app`: 넓은 앱 개발 요청을 세분 Skill로 나눌 때 사용합니다.
-- `manage-tocking-core`: theme, shadow, width, height, spacing, radius,
-  공통 유틸리티 등 `core` 공통 기반을 관리할 때 사용합니다.
-- `model-tocking-domain`: 토론 주제, 의견, 관점, 상태 전이 등 도메인 모델을
-  정의할 때 사용합니다.
-- `build-tocking-ui`: 화면과 컴포넌트를 구현할 때 사용합니다.
-- `integrate-tocking-api`: Naver/OpenAI API, DTO, repository, 외부 연동 경계를
-  구현할 때 사용합니다.
-- `qa-tocking`: 넓은 QA 요청을 세분 Skill로 나눌 때 사용합니다.
-- `qa-tocking-ui`: 화면, 반응형 레이아웃, 토론 UX, 접근성을 검증할 때
-  사용합니다.
-- `qa-tocking-api`: API 연동, 실패 처리, 비밀값 노출, fixture를 검증할 때
-  사용합니다.
+선택된 skill의 `Context Loading`을 따라 필요한 문서만 읽는다. 모든 docs를 한 번에 읽지 않는다.
 
-## 참고 자료
+## Risk Policy
 
-추가 참고 자료는 하네스들을 구현하면서 덧붙입니다.
+Risk는 `low`, `medium`, `high`로 분류한다. 상세 기준은 `docs/harness/risk-policy.md`를 따른다.
 
-## 공식 문서 재비교 기록
+다음은 항상 high-risk로 본다.
 
-- 2026-06-06: 전체 하네스를 Codex `AGENTS.md`, Codex Skills, Codex App Server,
-  OpenAI Agents SDK state/handoff 문서와 재비교했습니다. 결과는
-  `docs/harness-docs-comparison.md`에 기록했습니다. 현재 구조는 공식 문서 기준과
-  충돌하지 않으며, handoff는 공식 SDK 기능과 Tocking 내부 기록 개념을 구분해서
-  사용합니다.
+- 인증, 권한, 결제, 개인정보, 데이터 삭제, migration
+- secret, credential, signing key, 외부 service 설정
+- release, deploy, production config, rollback, incident response
 
-## 추가/수정 추천 기록
+High-risk 작업은 사용자 확인이 필요한지 먼저 판단하고, 검증, rollback 또는 mitigation, residual risk를 함께 보고한다.
 
-- 2026-06-06: 공식 문서 재비교 이후 추가하거나 수정할 만한 하네스 후보를
-  `docs/harness-recommendations.md`에 정리했습니다. 우선 후보는 OpenAI API 표면
-  결정, Naver 주제 수집 경계 정의, 큰 기획 저장소, handoff 로그, core 토큰
-  명세입니다.
+## Documentation Policy
 
-## UI 구현 기록
+문서 선택과 기록 기준은 선택된 skill의 `Context Loading`과 `docs/harness/documentation-ownership.md`를 따른다.
 
-- 2026-06-06: 홈 화면 UI 작업을 시작하며 Flutter 프로젝트 골격을 생성하고
-  `lib/core`에 홈 app bar 치수, spacing, 색상 토큰을 추가했습니다. 홈 app bar는
-  720x828 기준 프레임 안에서 상하좌우 12px padding을 사용하고, 로고는
-  166.5x36px, 검색 액션의 돋보기 박스는 36x36px로 검증합니다. 검증 명령은
-  `flutter analyze`, `flutter test`입니다.
-- 2026-06-06: 앱 시작 라우팅을 `go_router` 기반으로 전환했습니다.
-  `lib/core/router`에서 홈 경로 `/`와 `GoRouter` 구성을 관리하고, `main.dart`는
-  `MaterialApp.router`를 사용합니다.
+- 모든 문서 갱신은 갱신 필요성을 먼저 보고하고, 사용자 요청 또는 승인 후 진행한다.
+- `docs/harness/*`: harness 정책, routing, risk, quality, event map의 상세 기준
+- `docs/handoff/*`: 현재 상태, 확정 결정, 열린 질문, 다음 액션
+- 앱별 사실 문서: 사용자 결정이나 코드에서 확인한 내용만 기록
 
-## 개발 원칙 기록
+단순 구현 요청에서 문서를 과도하게 갱신하지 않는다. High-risk 결정이나 반복해서 참조해야 할 지식은 갱신 필요성을 보고하고 사용자 요청 또는 승인 후 문서화한다.
 
-- 2026-06-06: Flutter 앱 상태 관리는 Riverpod을 사용하고, 프레젠테이션 계층은
-  MVVM 패턴을 따르도록 개발단에 추가했습니다. 주요 화면 상태와 비동기 API
-  상태는 Riverpod provider/ViewModel로 관리하고, View는 렌더링과 입력 전달에
-  집중합니다.
-- 2026-06-06: 각 기능과 위젯은 최소 기능 단위를 기준으로 작게 유지하고,
-  가능하면 파일당 300줄을 넘지 않도록 개발단에 추가했습니다. 단, 응집도와
-  가독성을 해치면서까지 무리하게 줄이지는 않습니다.
+## Verification Policy
+
+검증은 변경 유형, scope, risk에 맞춰 선택한다. 상세 기준은 `docs/harness/quality-gates.md`를 따른다.
+
+- Flutter/Dart 동작 변경은 `flutter analyze`, 관련 `flutter test`, 또는 합리적인 대체 검증을 고려한다.
+- UI/UX 변경은 design 검토, 상태 확인, 가능한 visual verification을 고려한다.
+- 선택된 skill의 bundled script인 `.agents/skills/*/scripts/verify.sh`를 필요한 경우 실행한다.
+- Hooks는 safety check이고, skill script나 Flutter test를 대체하지 않는다.
+
+검증을 실행하지 못하면 완료로 과장하지 않는다. 실행하지 못한 이유, 대체 검증, 남은 위험을 보고한다.
+
+## Safety Policy
+
+- 사용자의 기존 변경사항을 되돌리지 않는다.
+- 새 의존성 추가, 데이터 삭제, 배포 실행, 외부 서비스 설정 변경은 사용자 확인 없이 하지 않는다.
+- secret, credential, token은 문서나 로그에 노출하지 않는다.
+- destructive command나 production-impacting action은 명시적 요청 또는 확인 없이 실행하지 않는다.
+- 위험 명령과 민감 변경의 자동 점검은 `.codex/hooks/`를 따른다.
+
+## Completion Policy
+
+작업은 다음 기준을 만족해야 완료로 보고할 수 있다.
+
+- 요청한 변경이 실제로 반영되었다.
+- 변경 범위에 맞는 검증을 수행했거나, 실행 불가 사유와 남은 위험을 보고했다.
+- 기능 변경은 테스트, 분석, 빌드, 또는 합리적인 대체 검증 없이 완료로 보고하지 않는다.
+- High-risk 작업은 rollback, monitoring, residual risk를 함께 보고한다.
+- 최종 응답은 변경 내용, 검증 결과, 남은 위험을 짧고 분명하게 말한다.

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tocking/core/router/app_routes.dart';
 import 'package:tocking/core/tocking_tokens.dart';
-import 'package:tocking/features/home/presentation/home_screen.dart';
+import 'package:tocking/features/home/presentation/view/home_screen.dart';
 import 'package:tocking/main.dart';
 
 void main() {
+  Future<void> pumpTockingApp(WidgetTester tester) {
+    return tester.pumpWidget(const ProviderScope(child: TockingApp()));
+  }
+
   testWidgets('renders the Tocking home app bar', (WidgetTester tester) async {
-    await tester.pumpWidget(const TockingApp());
+    await pumpTockingApp(tester);
 
     expect(find.byType(HomeScreen), findsOneWidget);
     expect(
@@ -19,7 +24,7 @@ void main() {
   });
 
   testWidgets('uses home as the initial route', (WidgetTester tester) async {
-    await tester.pumpWidget(const TockingApp());
+    await pumpTockingApp(tester);
 
     expect(AppRoutes.home, '/');
     expect(find.byType(HomeScreen), findsOneWidget);
@@ -28,7 +33,7 @@ void main() {
   testWidgets('matches requested app bar asset sizes', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(const TockingApp());
+    await pumpTockingApp(tester);
 
     final logo = tester.widget<Image>(
       find.image(const AssetImage('assets/logo/logo-row.png')),

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Tocking State 관리"
-  short_description: "state와 handoff 기록을 명확히 정리합니다."
-  default_prompt: "Tocking state와 handoff를 정리해줘."

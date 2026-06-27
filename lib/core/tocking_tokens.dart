@@ -4,6 +4,7 @@ abstract final class TockingColors {
   static const Color canvas = Color(0xFFFFFFFF);
   static const Color searchFill = Color(0xFFF4F4F5);
   static const Color searchBorder = Color(0xFFE9E9EC);
+  static const Color searchFocusedBorder = Color(0xFF1976D2);
   static const Color searchIcon = Color(0xFF9B9BA1);
   static const Color searchText = Color(0xFF6E6E73);
 }
