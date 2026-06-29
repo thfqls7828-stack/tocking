@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/tocking_tokens.dart';
-import '../../home_viewmodel.dart';
+import '../daily_issue_panel/daily_issue_list_notifier.dart';
 
 class TockingSearchAction extends ConsumerStatefulWidget {
   const TockingSearchAction({super.key});
@@ -31,7 +31,7 @@ class _TockingSearchActionState extends ConsumerState<TockingSearchAction> {
     }
 
     ref
-        .read(homeViewmodelProvider.notifier)
+        .read(dailyIssueListProvider.notifier)
         .submitSearch(_searchController.text);
     setState(() => _isExpanded = false);
   }

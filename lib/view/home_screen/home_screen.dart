@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/tocking_tokens.dart';
-import 'home_viewmodel.dart';
+import 'widgets/daily_issue_panel/daily_issue_list_notifier.dart';
+import 'widgets/daily_issue_panel/daily_issue_panel.dart';
 import 'widgets/tocking_animation_placeholder/tocking_animation_placeholder.dart';
 import 'widgets/tocking_home_app_bar/tocking_home_app_bar.dart';
 
@@ -11,7 +12,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(homeViewmodelProvider);
+    final dailyIssueState = ref.watch(dailyIssueListProvider);
 
     return Scaffold(
       backgroundColor: TockingColors.pageBackground,
@@ -33,11 +34,21 @@ class HomeScreen extends ConsumerWidget {
                   constraints: BoxConstraints(
                     maxWidth: TockingSizes.animationPlaceholder.width,
                   ),
-                  child: AspectRatio(
-                    aspectRatio:
-                        TockingSizes.animationPlaceholder.width /
-                        TockingSizes.animationPlaceholder.height,
-                    child: TockingAnimationPlaceholder(),
+                  child: Column(
+                    children: [
+                      AspectRatio(
+                        aspectRatio:
+                            TockingSizes.animationPlaceholder.width /
+                            TockingSizes.animationPlaceholder.height,
+                        child: const TockingAnimationPlaceholder(),
+                      ),
+                      const SizedBox(
+                        height: TockingSpacing.heroToDailyIssueGap,
+                      ),
+                      Expanded(
+                        child: DailyIssuePanel(items: dailyIssueState.items),
+                      ),
+                    ],
                   ),
                 ),
               ),

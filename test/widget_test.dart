@@ -4,7 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tocking/core/router/route_paths.dart';
 import 'package:tocking/core/theme/tocking_tokens.dart';
 import 'package:tocking/view/home_screen/home_screen.dart';
-import 'package:tocking/view/home_screen/home_viewmodel.dart';
+import 'package:tocking/view/home_screen/widgets/daily_issue_panel/daily_issue_list_notifier.dart';
+import 'package:tocking/view/home_screen/widgets/daily_issue_panel/daily_issue_panel.dart';
 import 'package:tocking/view/home_screen/widgets/tocking_animation_placeholder/tocking_animation_placeholder.dart';
 import 'package:tocking/view/home_screen/widgets/tocking_home_app_bar/tocking_home_app_bar.dart';
 import 'package:tocking/view/home_screen/widgets/tocking_search_action/tocking_search_action.dart';
@@ -24,6 +25,8 @@ void main() {
       findsOneWidget,
     );
     expect(find.byType(TockingAnimationPlaceholder), findsOneWidget);
+    expect(find.byType(DailyIssuePanel), findsOneWidget);
+    expect(find.text('일상의 쟁점'), findsOneWidget);
     expect(find.text('토론 규칙'), findsOneWidget);
     expect(find.text('토론 규칙 안내'), findsNothing);
     expect(
@@ -95,6 +98,59 @@ void main() {
       TockingSizes.animationPlaceholder.height,
     );
   });
+
+  testWidgets('renders a scrollable daily issue panel with ten mock issues', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(720, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await pumpTockingApp(tester);
+
+    final providerContainer = ProviderScope.containerOf(
+      tester.element(find.byType(HomeScreen)),
+    );
+
+    expect(providerContainer.read(dailyIssueListProvider).items, hasLength(10));
+    expect(find.byKey(const Key('home-daily-issue-panel')), findsOneWidget);
+    expect(find.byKey(const Key('home-daily-issue-list')), findsOneWidget);
+    expect(find.text('짬뽕이 VS 볶순이!!'), findsOneWidget);
+    expect(find.byIcon(Icons.record_voice_over), findsWidgets);
+    expect(find.text('10개'), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text('여행은 맛집 VS 풍경!!'),
+      160,
+      scrollable: find.byType(Scrollable),
+    );
+
+    expect(find.text('여행은 맛집 VS 풍경!!'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  test(
+    'daily issue list notifier stores and filters submitted search query',
+    () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      expect(container.read(dailyIssueListProvider).items, hasLength(10));
+
+      container.read(dailyIssueListProvider.notifier).submitSearch(' 민초 ');
+      final searchedState = container.read(dailyIssueListProvider);
+
+      expect(searchedState.submittedSearchQuery, '민초');
+      expect(searchedState.items, hasLength(1));
+      expect(searchedState.items.single.title, '민초파 VS 반민초파!!');
+      expect(searchedState.items.single.participantCount, 1);
+      expect(searchedState.items.single.proPercent, 100);
+      expect(searchedState.items.single.conPercent, 0);
+    },
+  );
 
   testWidgets(
     'toggles the hardcoded debate rules guide inside the placeholder',
@@ -187,7 +243,7 @@ void main() {
       find.byKey(const Key('home-search-action')),
     );
     expect(
-      providerContainer.read(homeViewmodelProvider).submittedSearchQuery,
+      providerContainer.read(dailyIssueListProvider).submittedSearchQuery,
       isNull,
     );
 
@@ -236,7 +292,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      providerContainer.read(homeViewmodelProvider).submittedSearchQuery,
+      providerContainer.read(dailyIssueListProvider).submittedSearchQuery,
       '',
     );
     expect(find.text('검색어를 입력해주세요.'), findsOneWidget);

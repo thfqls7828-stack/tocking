@@ -13,6 +13,17 @@ abstract final class TockingColors {
   static const Color rulesGuideSubText = Color(0xFF666666);
   static const Color rulesGuideIcon = Color(0xFF777777);
   static const Color rulesGuideShadow = Color(0x33000000);
+  static const Color dailyIssuePanel = Color(0xFFFFFFFF);
+  static const Color dailyIssueTitle = Color(0xFF303030);
+  static const Color dailyIssueText = Color(0xFF303030);
+  static const Color dailyIssueMeta = Color(0xFF74777D);
+  static const Color dailyIssueDivider = Color(0xFFEFF1F5);
+  static const Color dailyIssueCategoryPill = Color(0xFFFF5A58);
+  static const Color dailyIssueVotePreview = Color(0xFFDFF0FF);
+  static const Color dailyIssueVoteTrack = Color(0xFFEAF6FF);
+  static const Color dailyIssueVoteFill = Color(0xFF2B93E8);
+  static const Color dailyIssueOptionPrimary = Color(0xFF82EF9A);
+  static const Color dailyIssueOptionSecondary = Color(0xFFFFCE82);
   static const Color searchFill = Color(0xFFF4F4F5);
   static const Color searchBorder = Color(0xFFE9E9EC);
   static const Color searchIcon = Color(0xFF9B9BA1);
@@ -37,6 +48,18 @@ abstract final class TockingSpacing {
   static const double rulesGuideTitleGap = 8;
   static const double rulesGuideBulletGap = 7;
   static const double rulesGuideBulletDotWidth = 18;
+  static const double heroToDailyIssueGap = 16;
+  static const double dailyIssuePanelPadding = 16;
+  static const double dailyIssueHeaderGap = 12;
+  static const double dailyIssueItemVerticalPadding = 12;
+  static const double dailyIssueItemHorizontalPadding = 2;
+  static const double dailyIssueInlineGap = 8;
+  static const double dailyIssueMetaGap = 6;
+  static const double dailyIssueVotePadding = 8;
+  static const double dailyIssueVoteOptionGap = 6;
+  static const double dailyIssueVoteOptionIconGap = 4;
+  static const double dailyIssueVoteBarGap = 8;
+  static const double dailyIssueSeparatorHeight = 1;
 }
 
 abstract final class TockingSizes {
@@ -57,6 +80,19 @@ abstract final class TockingSizes {
   static const double rulesGuideBodyTextSize = 12.5;
   static const double rulesGuideDetailTextSize = 12;
   static const double rulesGuideContentWidth = 608;
+  static const double dailyIssueHeaderIcon = 20;
+  static const double dailyIssueHeaderTextSize = 20;
+  static const double dailyIssueCountTextSize = 12;
+  static const double dailyIssueCategoryTextSize = 12;
+  static const double dailyIssueCategoryHeight = 22;
+  static const double dailyIssueTitleTextSize = 16;
+  static const double dailyIssueMetaTextSize = 12;
+  static const double dailyIssueVoteOptionWidth = 112;
+  static const double dailyIssueVoteOptionHeight = 24;
+  static const double dailyIssueVoteOptionIcon = 16;
+  static const double dailyIssueVotePercentWidth = 42;
+  static const double dailyIssueVoteBarHeight = 8;
+  static const double dailyIssueEmptyTextSize = 14;
 }
 
 abstract final class TockingRadii {
@@ -64,6 +100,11 @@ abstract final class TockingRadii {
   static const double rulesPill = 11;
   static const double rulesGuide = 14;
   static const double search = 18;
+  static const double dailyIssuePanel = 8;
+  static const double dailyIssueCategoryPill = 11;
+  static const double dailyIssueVotePreview = 8;
+  static const double dailyIssueVoteOption = 12;
+  static const double dailyIssueVoteBar = 4;
 }
 
 abstract final class TockingMotion {
