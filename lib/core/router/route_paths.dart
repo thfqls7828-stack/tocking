@@ -1,3 +1,3 @@
-abstract final class AppRoutes {
+abstract final class RoutePaths {
   static const String home = '/';
 }

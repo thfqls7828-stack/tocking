@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'home_view_model.dart';
+part of 'home_viewmodel.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,28 +9,28 @@ part of 'home_view_model.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(HomeViewModel)
-final homeViewModelProvider = HomeViewModelProvider._();
+@ProviderFor(HomeViewmodel)
+final homeViewmodelProvider = HomeViewmodelProvider._();
 
-final class HomeViewModelProvider
-    extends $NotifierProvider<HomeViewModel, HomeViewState> {
-  HomeViewModelProvider._()
+final class HomeViewmodelProvider
+    extends $NotifierProvider<HomeViewmodel, HomeViewState> {
+  HomeViewmodelProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'homeViewModelProvider',
+        name: r'homeViewmodelProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$homeViewModelHash();
+  String debugGetCreateSourceHash() => _$homeViewmodelHash();
 
   @$internal
   @override
-  HomeViewModel create() => HomeViewModel();
+  HomeViewmodel create() => HomeViewmodel();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(HomeViewState value) {
@@ -41,9 +41,9 @@ final class HomeViewModelProvider
   }
 }
 
-String _$homeViewModelHash() => r'a01573accd371b8b3ee86dd94c1400b5bd8b6eaa';
+String _$homeViewmodelHash() => r'a46a564e46a985febe3ee57de5a10e3ac790300a';
 
-abstract class _$HomeViewModel extends $Notifier<HomeViewState> {
+abstract class _$HomeViewmodel extends $Notifier<HomeViewState> {
   HomeViewState build();
   @$mustCallSuper
   @override

@@ -26,9 +26,12 @@ REQUIRED_FILES = (
     ".codex/hooks/pre_tool_use_policy.py",
     ".codex/hooks/post_tool_use_review.py",
     ".codex/hooks/stop_quality_gate.py",
+    "docs/harness/README.md",
+    "docs/harness/documentation-ownership.md",
+    "docs/harness/event-map.md",
+    "docs/harness/prompt-routing.md",
     "docs/harness/quality-gates.md",
     "docs/harness/risk-policy.md",
-    "docs/harness/prompt-routing.md",
 )
 
 SKILL_NAMES = (

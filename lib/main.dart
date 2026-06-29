@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/router/app_router.dart';
-import 'core/tocking_theme.dart';
+import 'core/theme/light_theme.dart';
 
 void main() {
   runApp(const ProviderScope(child: TockingApp()));
@@ -16,7 +16,7 @@ class TockingApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Tocking',
       debugShowCheckedModeBanner: false,
-      theme: TockingTheme.light(),
+      theme: LightTheme.build(),
       routerConfig: AppRouter.router,
     );
   }

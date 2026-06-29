@@ -8,6 +8,7 @@ PREFIX="[plan-product]"
 STRICT="${HARNESS_STRICT:-0}"
 WARNINGS=0
 FAILURES=0
+PLACEHOLDER_PATTERN='Short title|^- [A-Z][A-Za-z0-9 /-]+:[[:space:]]*$|^- Option [A-Z]:[[:space:]]*$|^- [[:space:]]*$'
 
 pass() { printf '%s PASS: %s\n' "$PREFIX" "$*"; }
 warn() { WARNINGS=$((WARNINGS + 1)); printf '%s WARN: %s\n' "$PREFIX" "$*" >&2; }
@@ -23,6 +24,14 @@ require_doc() {
   fi
 }
 
+check_placeholders() {
+  for doc in "$@"; do
+    if [ -f "$doc" ] && grep -Eq "$PLACEHOLDER_PATTERN" "$doc"; then
+      warn "template placeholder remains in $doc; do not treat this as confirmed project facts"
+    fi
+  done
+}
+
 for doc in \
   docs/product/problem.md \
   docs/product/target-users.md \
@@ -35,6 +44,16 @@ for doc in \
 do
   require_doc "$doc"
 done
+
+check_placeholders \
+  docs/product/problem.md \
+  docs/product/target-users.md \
+  docs/product/mvp-scope.md \
+  docs/product/success-metrics.md \
+  docs/product/roadmap.md \
+  docs/handoff/decisions.md \
+  docs/handoff/open-questions.md \
+  docs/handoff/next-actions.md
 
 if [ -f docs/product/mvp-scope.md ] && [ -s docs/product/mvp-scope.md ]; then
   if grep -Eiq 'must|should|could|out-of-scope|out of scope' docs/product/mvp-scope.md; then

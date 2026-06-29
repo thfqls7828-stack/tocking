@@ -8,6 +8,7 @@ PREFIX="[design-ui]"
 STRICT="${HARNESS_STRICT:-0}"
 WARNINGS=0
 FAILURES=0
+PLACEHOLDER_PATTERN='Short title|^- [A-Z][A-Za-z0-9 /-]+:[[:space:]]*$|^- Option [A-Z]:[[:space:]]*$|^- [[:space:]]*$'
 
 info() { printf '%s INFO: %s\n' "$PREFIX" "$*"; }
 pass() { printf '%s PASS: %s\n' "$PREFIX" "$*"; }
@@ -24,6 +25,14 @@ require_doc() {
   fi
 }
 
+check_placeholders() {
+  for doc in "$@"; do
+    if [ -f "$doc" ] && grep -Eq "$PLACEHOLDER_PATTERN" "$doc"; then
+      warn "template placeholder remains in $doc; do not treat this as confirmed project facts"
+    fi
+  done
+}
+
 for doc in \
   docs/design/ux-principles.md \
   docs/design/ui-principles.md \
@@ -34,6 +43,14 @@ for doc in \
 do
   require_doc "$doc"
 done
+
+check_placeholders \
+  docs/design/ux-principles.md \
+  docs/design/ui-principles.md \
+  docs/design/design-system.md \
+  docs/design/screen-flows.md \
+  docs/design/states.md \
+  docs/project/constraints.md
 
 if [ -f docs/design/states.md ] && [ -s docs/design/states.md ]; then
   for state in loading empty error success disabled; do

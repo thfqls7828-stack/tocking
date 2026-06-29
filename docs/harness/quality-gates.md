@@ -47,6 +47,7 @@
 - `0`: 검증 통과. Warning이 있을 수 있으므로 출력 내용을 확인한다.
 - Non-zero: 검증 실패. 실패 원인을 고치거나, 실행 불가 사유와 남은 위험을 보고하기 전까지 완료로 말하지 않는다.
 - `HARNESS_STRICT=1`: 일부 script는 warning을 failure로 취급할 수 있다.
+- Template placeholder warning: skill script가 빈 템플릿 필드를 발견하면 warning을 남긴다. 이는 문서 구조는 있으나 앱별 사실이 확정되지 않았다는 뜻이며, `HARNESS_STRICT=1`에서는 failure가 될 수 있다.
 
 ## Hooks Versus Scripts
 

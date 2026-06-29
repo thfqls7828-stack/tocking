@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'tocking_tokens.dart';
 
-abstract final class TockingTheme {
-  static ThemeData light() {
+abstract final class LightTheme {
+  static ThemeData build() {
     return ThemeData(
       colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xFF1976D2),
+        seedColor: TockingColors.primary,
         surface: TockingColors.canvas,
       ),
       scaffoldBackgroundColor: TockingColors.canvas,
