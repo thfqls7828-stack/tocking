@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../../../core/theme/tocking_tokens.dart';
 
@@ -12,13 +14,47 @@ class TockingAnimationPlaceholder extends StatefulWidget {
 
 class _TockingAnimationPlaceholderState
     extends State<TockingAnimationPlaceholder> {
+  static const String _animationAsset = 'assets/home/animation.mp4';
   static final Object _rulesTapRegion = Object();
 
+  late final VideoPlayerController _animationController;
+  late final Future<void> _animationFuture;
   final FocusNode _rulesFocusNode = FocusNode(debugLabel: 'home-rules-guide');
   bool _isRulesGuideVisible = false;
 
   @override
+  void initState() {
+    super.initState();
+    _animationController = VideoPlayerController.asset(_animationAsset);
+    _animationFuture = _prepareAnimation();
+  }
+
+  Future<void> _prepareAnimation() async {
+    await _animationController.initialize();
+    if (!mounted) {
+      return;
+    }
+
+    await _animationController.setLooping(true);
+    if (!mounted) {
+      return;
+    }
+
+    await _animationController.setVolume(0);
+    if (!mounted) {
+      return;
+    }
+
+    try {
+      await _animationController.play();
+    } on PlatformException {
+      // Keep the initialized frame visible if a platform rejects autoplay.
+    }
+  }
+
+  @override
   void dispose() {
+    _animationController.dispose();
     _rulesFocusNode.dispose();
     super.dispose();
   }
@@ -69,6 +105,19 @@ class _TockingAnimationPlaceholderState
           ),
           child: Stack(
             children: [
+              Positioned.fill(
+                child: FutureBuilder<void>(
+                  future: _animationFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done ||
+                        snapshot.hasError) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return _AnimationVideo(controller: _animationController);
+                  },
+                ),
+              ),
               if (_isRulesGuideVisible)
                 Positioned.fill(
                   child: GestureDetector(
@@ -111,6 +160,34 @@ class _TockingAnimationPlaceholderState
                 ),
               ],
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AnimationVideo extends StatelessWidget {
+  const _AnimationVideo({required this.controller});
+
+  final VideoPlayerController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final videoSize = controller.value.size;
+
+    if (videoSize.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return ExcludeSemantics(
+      child: IgnorePointer(
+        child: FittedBox(
+          fit: BoxFit.cover,
+          child: SizedBox(
+            width: videoSize.width,
+            height: videoSize.height,
+            child: VideoPlayer(controller),
           ),
         ),
       ),
