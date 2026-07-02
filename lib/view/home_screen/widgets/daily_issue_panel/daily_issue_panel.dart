@@ -4,11 +4,20 @@ import '../../../../core/theme/tocking_tokens.dart';
 import '../../../../domain/debate/entity/debate_room_entity.dart';
 
 class DailyIssuePanel extends StatelessWidget {
-  const DailyIssuePanel({super.key, required this.items});
+  const DailyIssuePanel({
+    super.key,
+    required this.items,
+    this.isLoading = false,
+    this.errorMessage,
+    this.onRetry,
+  });
 
   static const int _maxVisibleItems = 10;
 
   final List<DebateRoomEntity> items;
+  final bool isLoading;
+  final String? errorMessage;
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -27,26 +36,15 @@ class DailyIssuePanel extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _DailyIssueHeader(count: visibleItems.length),
+            _DailyIssueHeader(),
             const SizedBox(height: TockingSpacing.dailyIssueHeaderGap),
             Expanded(
-              child: visibleItems.isEmpty
-                  ? const _DailyIssueEmptyState()
-                  : ListView.separated(
-                      key: const Key('home-daily-issue-list'),
-                      padding: EdgeInsets.zero,
-                      physics: const ClampingScrollPhysics(),
-                      itemCount: visibleItems.length,
-                      separatorBuilder: (context, index) => const Divider(
-                        height: TockingSpacing.dailyIssueSeparatorHeight,
-                        thickness: TockingSpacing.dailyIssueSeparatorHeight,
-                        color: TockingColors.dailyIssueDivider,
-                      ),
-                      itemBuilder: (context, index) => _DailyIssueTile(
-                        key: Key('home-daily-issue-item-$index'),
-                        item: visibleItems[index],
-                      ),
-                    ),
+              child: _DailyIssueBody(
+                items: visibleItems,
+                isLoading: isLoading,
+                errorMessage: errorMessage,
+                onRetry: onRetry,
+              ),
             ),
           ],
         ),
@@ -55,10 +53,67 @@ class DailyIssuePanel extends StatelessWidget {
   }
 }
 
-class _DailyIssueHeader extends StatelessWidget {
-  const _DailyIssueHeader({required this.count});
+class _DailyIssueBody extends StatelessWidget {
+  const _DailyIssueBody({
+    required this.items,
+    required this.isLoading,
+    required this.errorMessage,
+    required this.onRetry,
+  });
 
-  final int count;
+  final List<DebateRoomEntity> items;
+  final bool isLoading;
+  final String? errorMessage;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading && items.isEmpty) {
+      return const _DailyIssueLoadingState();
+    }
+
+    if (errorMessage != null && items.isEmpty) {
+      return _DailyIssueErrorState(message: errorMessage!, onRetry: onRetry);
+    }
+
+    if (items.isEmpty) {
+      return const _DailyIssueEmptyState();
+    }
+
+    return Column(
+      children: [
+        if (isLoading) ...[
+          const LinearProgressIndicator(
+            minHeight: 2,
+            color: TockingColors.primary,
+            backgroundColor: TockingColors.dailyIssueDivider,
+          ),
+          const SizedBox(height: TockingSpacing.dailyIssueInlineGap),
+        ],
+        Expanded(
+          child: ListView.separated(
+            key: const Key('home-daily-issue-list'),
+            padding: EdgeInsets.zero,
+            physics: const ClampingScrollPhysics(),
+            itemCount: items.length,
+            separatorBuilder: (context, index) => const Divider(
+              height: TockingSpacing.dailyIssueSeparatorHeight,
+              thickness: TockingSpacing.dailyIssueSeparatorHeight,
+              color: TockingColors.dailyIssueDivider,
+            ),
+            itemBuilder: (context, index) => _DailyIssueTile(
+              key: Key('home-daily-issue-item-$index'),
+              item: items[index],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DailyIssueHeader extends StatelessWidget {
+  const _DailyIssueHeader();
 
   @override
   Widget build(BuildContext context) {
@@ -84,16 +139,6 @@ class _DailyIssueHeader extends StatelessWidget {
               height: 1.15,
               letterSpacing: 0,
             ),
-          ),
-        ),
-        Text(
-          '$count개',
-          style: textTheme.bodySmall?.copyWith(
-            color: TockingColors.dailyIssueMeta,
-            fontSize: TockingSizes.dailyIssueCountTextSize,
-            fontWeight: FontWeight.w700,
-            height: 1,
-            letterSpacing: 0,
           ),
         ),
       ],
@@ -155,22 +200,6 @@ class _DailyIssueTile extends StatelessWidget {
                   ),
                 ),
               ),
-              const Icon(
-                Icons.schedule,
-                color: TockingColors.dailyIssueMeta,
-                size: TockingSizes.dailyIssueMetaTextSize,
-              ),
-              const SizedBox(width: 2),
-              Text(
-                _formatRemainingTime(item.remainingTime),
-                style: textTheme.bodySmall?.copyWith(
-                  color: TockingColors.dailyIssueMeta,
-                  fontSize: TockingSizes.dailyIssueMetaTextSize,
-                  fontWeight: FontWeight.w700,
-                  height: 1.15,
-                  letterSpacing: 0,
-                ),
-              ),
             ],
           ),
           const SizedBox(height: TockingSpacing.dailyIssueVoteOptionGap),
@@ -178,17 +207,6 @@ class _DailyIssueTile extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _formatRemainingTime(Duration remainingTime) {
-    final hours = remainingTime.inHours;
-    final minutes = remainingTime.inMinutes.remainder(60);
-
-    if (hours == 0) {
-      return '$minutes분 남음';
-    }
-
-    return '$hours시간 $minutes분 남음';
   }
 }
 
@@ -249,13 +267,13 @@ class _DailyIssueVotePreview extends StatelessWidget {
         child: Column(
           children: [
             _DailyIssueStanceRow(
-              label: '찬성',
+              label: item.proName,
               percent: item.proPercent,
               isPrimary: true,
             ),
             const SizedBox(height: TockingSpacing.dailyIssueVoteOptionGap),
             _DailyIssueStanceRow(
-              label: '반대',
+              label: item.conName,
               percent: item.conPercent,
               isPrimary: false,
             ),
@@ -378,6 +396,141 @@ class _DailyIssueVoteBar extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _DailyIssueLoadingState extends StatelessWidget {
+  const _DailyIssueLoadingState();
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxHeight < 56) {
+          return const Center(
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.5,
+                color: TockingColors.primary,
+              ),
+            ),
+          );
+        }
+
+        return Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  color: TockingColors.primary,
+                ),
+              ),
+              const SizedBox(height: TockingSpacing.dailyIssueInlineGap),
+              Text(
+                '토론방을 불러오는 중입니다.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: TockingColors.dailyIssueMeta,
+                  fontSize: TockingSizes.dailyIssueEmptyTextSize,
+                  fontWeight: FontWeight.w700,
+                  height: 1.2,
+                  letterSpacing: 0,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _DailyIssueStatusScrollView extends StatelessWidget {
+  const _DailyIssueStatusScrollView({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Center(child: child),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _DailyIssueErrorState extends StatelessWidget {
+  const _DailyIssueErrorState({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final messageStyle = textTheme.bodyMedium?.copyWith(
+      color: TockingColors.dailyIssueMeta,
+      fontSize: TockingSizes.dailyIssueEmptyTextSize,
+      fontWeight: FontWeight.w700,
+      height: 1.2,
+      letterSpacing: 0,
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxHeight < 56) {
+          return Center(
+            child: Text(
+              message,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: messageStyle,
+            ),
+          );
+        }
+
+        return _DailyIssueStatusScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.error_outline,
+                color: TockingColors.dailyIssueMeta,
+                size: 28,
+              ),
+              const SizedBox(height: TockingSpacing.dailyIssueInlineGap),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: messageStyle,
+              ),
+              const SizedBox(height: TockingSpacing.dailyIssueInlineGap),
+              TextButton.icon(
+                onPressed: onRetry,
+                icon: const Icon(Icons.refresh, size: 18),
+                label: const Text('다시 시도'),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

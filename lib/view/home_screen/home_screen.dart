@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/error/app_failure.dart';
 import '../../core/theme/tocking_tokens.dart';
 import 'widgets/daily_issue_panel/daily_issue_list_notifier.dart';
 import 'widgets/daily_issue_panel/daily_issue_panel.dart';
@@ -46,7 +47,35 @@ class HomeScreen extends ConsumerWidget {
                         height: TockingSpacing.heroToDailyIssueGap,
                       ),
                       Expanded(
-                        child: DailyIssuePanel(items: dailyIssueState.items),
+                        child: dailyIssueState.when(
+                          data: (state) {
+                            return DailyIssuePanel(
+                              items: state.items,
+                              onRetry: () {
+                                ref
+                                    .read(dailyIssueListProvider.notifier)
+                                    .refresh();
+                              },
+                            );
+                          },
+                          error: (error, stackTrace) {
+                            return DailyIssuePanel(
+                              items: const [],
+                              errorMessage: _dailyIssueErrorMessage(error),
+                              onRetry: () {
+                                ref
+                                    .read(dailyIssueListProvider.notifier)
+                                    .refresh();
+                              },
+                            );
+                          },
+                          loading: () {
+                            return const DailyIssuePanel(
+                              items: [],
+                              isLoading: true,
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -58,4 +87,11 @@ class HomeScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+String _dailyIssueErrorMessage(Object error) {
+  return switch (error) {
+    AppFailure(:final message) => message,
+    _ => '토론방을 불러오지 못했습니다.',
+  };
 }

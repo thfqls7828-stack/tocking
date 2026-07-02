@@ -13,7 +13,8 @@ part of 'daily_issue_list_notifier.dart';
 final dailyIssueListProvider = DailyIssueListNotifierProvider._();
 
 final class DailyIssueListNotifierProvider
-    extends $NotifierProvider<DailyIssueListNotifier, DailyIssueListState> {
+    extends
+        $AsyncNotifierProvider<DailyIssueListNotifier, DailyIssueListState> {
   DailyIssueListNotifierProvider._()
     : super(
         from: null,
@@ -31,30 +32,24 @@ final class DailyIssueListNotifierProvider
   @$internal
   @override
   DailyIssueListNotifier create() => DailyIssueListNotifier();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(DailyIssueListState value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<DailyIssueListState>(value),
-    );
-  }
 }
 
 String _$dailyIssueListNotifierHash() =>
-    r'7ce1980dbb05b0a134c9c96adc9860bf8f90ea8b';
+    r'3a96cf56e568c8435ce47cf11a86ff4b5076df7e';
 
-abstract class _$DailyIssueListNotifier extends $Notifier<DailyIssueListState> {
-  DailyIssueListState build();
+abstract class _$DailyIssueListNotifier
+    extends $AsyncNotifier<DailyIssueListState> {
+  FutureOr<DailyIssueListState> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<DailyIssueListState, DailyIssueListState>;
+    final ref =
+        this.ref as $Ref<AsyncValue<DailyIssueListState>, DailyIssueListState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<DailyIssueListState, DailyIssueListState>,
-              DailyIssueListState,
+              AnyNotifier<AsyncValue<DailyIssueListState>, DailyIssueListState>,
+              AsyncValue<DailyIssueListState>,
               Object?,
               Object?
             >;
